@@ -11,18 +11,26 @@ const videoConstraints = {
 };
 import loadingGift from '../assets/loading.gif'
 
-const FacePanel = ({ title , token, ur='http://127.0.0.1:8000/faces/recognition-knn/', handler}) => {
-
+const FacePanel = ({ title , token, urlParam='', handler}) => {
+    const [url, setUrl] = useState('')
+    
     useEffect(() => {
-      
+       
         if (!token) {
             throw new Error("Token is required")
         }
     }, [])
     
+    useEffect(() => {
+        if (!urlParam) {
+            setUrl(`${import.meta.env.VITE_API_KEY}/faces/recognition-knn`)
+        }else{
+            setUrl(url)
+        }
+       
+    }, [urlParam, url])
     
     const webcamRef = useRef(null);
-    const [user, setUser] = useState('')
     const [loading, setLoading] = useState()
 
     const capture = useCallback(
@@ -42,7 +50,7 @@ const FacePanel = ({ title , token, ur='http://127.0.0.1:8000/faces/recognition-
                 fd.append('face', face, 'image.png');
                 const res = await axios({
                     method: 'POST',
-                    url: "",
+                    url: url,
                     data: fd,
                     headers : { Authorization: `Bearer ${token}` }
                 })
@@ -51,7 +59,7 @@ const FacePanel = ({ title , token, ur='http://127.0.0.1:8000/faces/recognition-
                     response:true,
                     user:res.data.user
                 }
-
+                
                 handler(response)
                 withReactContent(Swal).fire({
                     title: <i>Bienvenido {res.data.user.nombre}</i>,

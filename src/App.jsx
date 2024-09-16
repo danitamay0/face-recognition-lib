@@ -7,10 +7,10 @@ function App() {
   const [token, setToken] = useState('')
   const getToken = async () => {
     try {
-      const data = { "username": "admin", "password": "admin" }
+      const data = { "username": import.meta.env.VITE_USER, "password": import.meta.env.VITE_PASWORD }
       const res = await axios({
         method: 'POST',
-        url: "http://localhost:8000/token/",
+        url: `${import.meta.env.VITE_API_KEY}/token`,
         data
       })
       const tokenAccess = res.data.access
@@ -21,10 +21,6 @@ function App() {
       console.log(error);
 
     }
-
-
-
-    return res
   }
   useEffect(() => {
     getToken()
