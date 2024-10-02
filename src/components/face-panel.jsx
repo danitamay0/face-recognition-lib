@@ -22,11 +22,9 @@ const FacePanel = ({ title , token, urlParam='', handler}) => {
     }, [])
     
     useEffect(() => {
-        if (!urlParam) {
-            setUrl(`${import.meta.env.VITE_API_KEY}/faces/recognition-knn`)
-        }else{
-            setUrl(url)
-        }
+       
+        setUrl(`${import.meta.env.VITE_API_KEY}/faces/recognition-knn`)
+      
        
     }, [urlParam, url])
     
