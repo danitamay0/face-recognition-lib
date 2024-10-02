@@ -12,22 +12,21 @@ const videoConstraints = {
 import loadingGift from '../assets/loading.gif'
 
 const FacePanel = ({ title , token, urlParam='', handler}) => {
-    const [url, setUrl] = useState('')
+    const [URL, setUri] = useState('')
     
     useEffect(() => {
-       
         if (!token) {
-            throw new Error("Token is required")
+            throw new Error("Token is required");
         }
-    }, [])
-    
-    useEffect(() => {
-       
-        setUrl(`${import.meta.env.VITE_API_KEY}/faces/recognition-knn`)
-      
-       
-    }, [urlParam, url])
-    
+        if (!urlParam) {
+            const uri = `${import.meta.env.VITE_API_KEY}/faces/recognition-knn`;
+            console.log(uri);
+            setUri(uri);
+        } else {
+            setUri(urlParam);
+        }
+    }, [token, urlParam]);
+
     const webcamRef = useRef(null);
     const [loading, setLoading] = useState()
 
@@ -36,7 +35,6 @@ const FacePanel = ({ title , token, urlParam='', handler}) => {
             setLoading(true)
 
             const imageSrc = webcamRef.current.getScreenshot();
-            console.log(imageSrc);
             const fd = new FormData()
             try {
               
@@ -46,9 +44,11 @@ const FacePanel = ({ title , token, urlParam='', handler}) => {
                     .then(img => face = img)
     
                 fd.append('face', face, 'image.png');
+                console.log({URL});
+                
                 const res = await axios({
                     method: 'POST',
-                    url: url,
+                    url: URL,
                     data: fd,
                     headers : { Authorization: `Bearer ${token}` }
                 })
@@ -94,7 +94,7 @@ const FacePanel = ({ title , token, urlParam='', handler}) => {
             }
 
         },
-        [webcamRef]
+        [webcamRef, URL]
     );
     return <section className="rounded-3xl px-6 py-6 w-full h-full bg-slate-900">
 
